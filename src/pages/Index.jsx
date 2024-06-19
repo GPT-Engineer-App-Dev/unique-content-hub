@@ -1,15 +1,25 @@
-import { Container, VStack, Heading, Text, Box, Image, Link } from "@chakra-ui/react";
+import { Container, VStack, Heading, Text, Box, Image, Link, Button } from "@chakra-ui/react";
 import { FaTwitter, FaGithub, FaLinkedin } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import { Link as RouterLink } from "react-router-dom";
 
 const Index = () => {
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    const storedPosts = JSON.parse(localStorage.getItem("posts")) || [];
+    setPosts(storedPosts);
+  }, []);
+
   return (
     <Container centerContent maxW="container.md" height="100vh" display="flex" flexDirection="column" justifyContent="center" alignItems="center">
       <VStack spacing={4}>
-        <Heading as="h1" size="2xl">Welcome to My Blog</Heading>
+        <Heading as="h1" size="2xl">Welcome to My Personal Blog</Heading>
         <Text fontSize="lg">A space where I share my thoughts and experiences.</Text>
         <Box boxSize="sm">
           <Image src="/images/blog-image.jpg" alt="Blog Image" borderRadius="md" />
         </Box>
+        <Button as={RouterLink} to="/new-post" colorScheme="teal">Create New Post</Button>
         <Text fontSize="md">Follow me on:</Text>
         <VStack spacing={2}>
           <Link href="https://twitter.com" isExternal>
@@ -21,6 +31,15 @@ const Index = () => {
           <Link href="https://linkedin.com" isExternal>
             <FaLinkedin size="24px" />
           </Link>
+        </VStack>
+        <VStack spacing={4} width="100%">
+          {posts.map((post, index) => (
+            <Box key={index} p={5} shadow="md" borderWidth="1px" width="100%">
+              <Heading fontSize="xl">{post.title}</Heading>
+              <Text mt={4}>{post.content}</Text>
+              {post.image && <Image src={post.image} alt={post.title} mt={4} />}
+            </Box>
+          ))}
         </VStack>
       </VStack>
     </Container>
